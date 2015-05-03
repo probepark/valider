@@ -71,11 +71,23 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+      proxies: [
+        {
+          context: '/api',
+          host: 'localhost',
+          port: 8000
+        }
+      ],
       livereload: {
         options: {
           open: true,
-          middleware: function (connect) {
-            return [
+          middleware: function (connect, options) {
+            if (!Array.isArray(options.base)) {
+              options.base = [options.base];
+            }
+
+            var middlewares = [
+              require('grunt-connect-proxy/lib/utils').proxyRequest,
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -87,6 +99,11 @@ module.exports = function (grunt) {
               ),
               connect.static(appConfig.app)
             ];
+
+            var directory = options.directory || options.base[options.base.length - 1];
+            middlewares.push(connect.directory(directory));
+
+            return middlewares;
           }
         }
       },
@@ -156,7 +173,7 @@ module.exports = function (grunt) {
       },
       server: {
         options: {
-          map: true,
+          map: true
         },
         files: [{
           expand: true,
@@ -179,23 +196,23 @@ module.exports = function (grunt) {
     wiredep: {
       app: {
         src: ['<%= yeoman.app %>/index.html'],
-        ignorePath:  /\.\.\//
+        ignorePath: /\.\.\//
       },
       test: {
         devDependencies: true,
         src: '<%= karma.unit.configFile %>',
-        ignorePath:  /\.\.\//,
-        fileTypes:{
+        ignorePath: /\.\.\//,
+        fileTypes: {
           js: {
             block: /(([\s\t]*)\/{2}\s*?bower:\s*?(\S*))(\n|\r|.)*?(\/{2}\s*endbower)/gi,
-              detect: {
-                js: /'(.*\.js)'/gi
-              },
-              replace: {
-                js: '\'{{filePath}}\','
-              }
+            detect: {
+              js: /'(.*\.js)'/gi
+            },
+            replace: {
+              js: '\'{{filePath}}\','
             }
           }
+        }
       },
       sass: {
         src: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
@@ -448,6 +465,7 @@ module.exports = function (grunt) {
     'wiredep',
     'concurrent:test',
     'autoprefixer',
+    'configureProxies',
     'connect:test',
     'karma'
   ]);
@@ -474,4 +492,6 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  grunt.loadNpmTasks('grunt-connect-proxy');
 };
