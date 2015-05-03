@@ -1,0 +1,12 @@
+<p>Validate your message of sms</p>
+
+<textarea ng-model="smsMessage"
+          ng-model-options="{ debounce: 300 }"
+          ng-change="hello()"
+          class="form-control" rows="10">
+  {{createChildResource | json}}
+</textarea>
+
+<pre>
+  {{smsResult | json}}
+</pre>

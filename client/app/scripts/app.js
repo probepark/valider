@@ -29,6 +29,10 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
+      .when('/sms', {
+        templateUrl: 'views/sms.html',
+        controller: 'SmsCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
