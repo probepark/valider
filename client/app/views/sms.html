@@ -2,11 +2,13 @@
 
 <textarea ng-model="smsMessage"
           ng-model-options="{ debounce: 300 }"
-          ng-change="hello()"
+          ng-change="update()"
           class="form-control" rows="10">
-  {{createChildResource | json}}
 </textarea>
 
 <pre>
-  {{smsResult | json}}
+{{smsResult | json }}
 </pre>
+
+<a class="btn btn-success" ng-href="https://github.com/probepark/valider/issues/new?title=NewSmsIssue&body={{smsMessage | escape }}">Create an issue</a>
+

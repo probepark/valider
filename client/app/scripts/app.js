@@ -17,7 +17,8 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'LocalStorageModule'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -36,4 +37,6 @@ angular
       .otherwise({
         redirectTo: '/'
       });
+  }).filter('escape', function () {
+    return window.encodeURIComponent;
   });
