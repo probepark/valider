@@ -1,0 +1,22 @@
+api: 
+  build: .
+  ports:
+   - "3000"
+  volumes:
+   - /tmp:/tmp
+
+web:
+  build: client
+  ports:
+   - "9000:9000"
+  command: grunt serve:dist
+
+nginx:
+  build: nginx
+  ports:
+   - "80:80"
+   - "443:443"
+  links:
+   - "web"
+  volumes:
+   - /tmp:/tmp
